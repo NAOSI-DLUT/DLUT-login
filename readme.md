@@ -1,9 +1,5 @@
-# !! 本项目已移至 [NAOSI-DLUT/DLUT-login](https://github.com/NAOSI-DLUT/DLUT-login)
-本仓库不再接收更新
-
----
-
 # DLUT-login
+
 ## 自动化登陆大连理工大学统一认证系统和 webvpn 系统
 
 本仓库存放了使用 python 或 javascript 登陆大连理工大学统一认证系统和 webvpn 系统的脚本, 以供有需要实现自动化/爬虫等工具的同学参考
