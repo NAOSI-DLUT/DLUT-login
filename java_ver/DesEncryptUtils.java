@@ -1,5 +1,8 @@
-public class DesEncryptUtils {
-    private byte[][] generateKeys(byte[] keyByte) {
+public final class DesEncryptUtils {
+    private DesEncryptUtils() {
+    }
+
+    private static byte[][] generateKeys(byte[] keyByte) {
         byte[] key = new byte[56];
         byte[][] keys = new byte[16][48];
 
@@ -127,7 +130,7 @@ public class DesEncryptUtils {
         return keys;
     }
 
-    private String getBoxBinary(int i) {
+    private static String getBoxBinary(int i) {
         switch (i) {
             case 0:
                 return "0000";
@@ -166,7 +169,7 @@ public class DesEncryptUtils {
         }
     }
 
-    private byte[] initPermute(byte[] originalData) {
+    private static byte[] initPermute(byte[] originalData) {
         byte[] ipByte = new byte[64];
         for (int i = 0, m = 1, n = 0; i < 4; i++, m += 2, n += 2) {
             for (int j = 7, k = 0; j >= 0; j--, k++) {
@@ -177,22 +180,28 @@ public class DesEncryptUtils {
         return ipByte;
     }
 
-    private byte[] expandPermute(byte[] rightData) {
+    private static byte[] expandPermute(byte[] rightData) {
         byte[] epByte = new byte[48];
         for (int i = 0; i < 8; i++) {
-            if (i == 0) epByte[i * 6] = rightData[31];
-            else epByte[i * 6] = rightData[i * 4 - 1];
+            if (i == 0) {
+                epByte[i * 6] = rightData[31];
+            } else {
+                epByte[i * 6] = rightData[i * 4 - 1];
+            }
             epByte[i * 6 + 1] = rightData[i * 4];
             epByte[i * 6 + 2] = rightData[i * 4 + 1];
             epByte[i * 6 + 3] = rightData[i * 4 + 2];
             epByte[i * 6 + 4] = rightData[i * 4 + 3];
-            if (i == 7) epByte[i * 6 + 5] = rightData[0];
-            else epByte[i * 6 + 5] = rightData[i * 4 + 4];
+            if (i == 7) {
+                epByte[i * 6 + 5] = rightData[0];
+            } else {
+                epByte[i * 6 + 5] = rightData[i * 4 + 4];
+            }
         }
         return epByte;
     }
 
-    private byte[] xor(byte[] byteOne, byte[] byteTwo) {
+    private static byte[] xor(byte[] byteOne, byte[] byteTwo) {
         byte[] xorByte = new byte[byteOne.length];
         for (int i = 0; i < byteOne.length; i++) {
             xorByte[i] = (byte) (byteOne[i] ^ byteTwo[i]);
@@ -200,7 +209,7 @@ public class DesEncryptUtils {
         return xorByte;
     }
 
-    private byte[] sBoxPermute(byte[] expandByte) {
+    private static byte[] sBoxPermute(byte[] expandByte) {
         byte[] sBoxByte = new byte[32];
         String binary = "";
         int[][] s1 = new int[][]{
@@ -300,7 +309,7 @@ public class DesEncryptUtils {
         return sBoxByte;
     }
 
-    private byte[] pPermute(byte[] sBoxByte) {
+    private static byte[] pPermute(byte[] sBoxByte) {
         byte[] pBoxPermute = new byte[32];
         pBoxPermute[0] = sBoxByte[15];
         pBoxPermute[1] = sBoxByte[6];
@@ -337,7 +346,7 @@ public class DesEncryptUtils {
         return pBoxPermute;
     }
 
-    private byte[] finallyPermute(byte[] endByte) {
+    private static byte[] finallyPermute(byte[] endByte) {
         byte[] fpByte = new byte[64];
         fpByte[0] = endByte[39];
         fpByte[1] = endByte[7];
@@ -406,7 +415,7 @@ public class DesEncryptUtils {
         return fpByte;
     }
 
-    private byte[] strToBt(String str) {
+    private static byte[] strToBt(String str) {
         int length = str.length();
         byte[] bt = new byte[64];
         if (length < 4) {
@@ -440,7 +449,7 @@ public class DesEncryptUtils {
         return bt;
     }
 
-    private String byteToString(byte[] byteData) {
+    private static String byteToString(byte[] byteData) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < 4; i++) {
             int count = 0;
@@ -451,12 +460,14 @@ public class DesEncryptUtils {
                 }
                 count += byteData[16 * i + j] * pow;
             }
-            if (count != 0) str.append((char) count);
+            if (count != 0) {
+                str.append((char) count);
+            }
         }
         return str.toString();
     }
 
-    private String bt4ToHex(String binary) {
+    private static String bt4ToHex(String binary) {
         switch (binary) {
             case "0000":
                 return "0";
@@ -495,7 +506,7 @@ public class DesEncryptUtils {
         }
     }
 
-    private String hexToBt4(String hex) {
+    private static String hexToBt4(String hex) {
         switch (hex) {
             case "0":
                 return "0000";
@@ -534,7 +545,7 @@ public class DesEncryptUtils {
         }
     }
 
-    private String bt64ToHex(byte[] byteData) {
+    private static String bt64ToHex(byte[] byteData) {
         StringBuilder hex = new StringBuilder();
         for (int i = 0; i < 16; i++) {
             StringBuilder bt = new StringBuilder();
@@ -546,7 +557,7 @@ public class DesEncryptUtils {
         return hex.toString();
     }
 
-    private String hexToBt64(String hex) {
+    private static String hexToBt64(String hex) {
         StringBuilder binary = new StringBuilder();
         for (int i = 0; i < 16; i++) {
             binary.append(hexToBt4(hex.substring(i, i + 1)));
@@ -554,7 +565,7 @@ public class DesEncryptUtils {
         return binary.toString();
     }
 
-    private byte[][] getKeyBytes(String key) {
+    private static byte[][] getKeyBytes(String key) {
         int length = key.length();
         int iterator = length / 4;
         byte[][] keyBytes = new byte[iterator + 1][];
@@ -562,11 +573,13 @@ public class DesEncryptUtils {
         for (int i = 0; i < iterator; i++) {
             keyBytes[i] = strToBt(key.substring(i * 4, i * 4 + 4));
         }
-        if (remainder > 0) keyBytes[iterator] = strToBt(key.substring(iterator * 4, length));
+        if (remainder > 0) {
+            keyBytes[iterator] = strToBt(key.substring(iterator * 4, length));
+        }
         return keyBytes;
     }
 
-    private byte[] enc(byte[] dataByte, byte[] keyByte) {
+    private static byte[] enc(byte[] dataByte, byte[] keyByte) {
         byte[][] keys = generateKeys(keyByte);
         byte[] ipByte = initPermute(dataByte);
         byte[] ipLeft = new byte[32];
@@ -594,7 +607,7 @@ public class DesEncryptUtils {
         return finallyPermute(finalData);
     }
 
-    private byte[] dec(byte[] dataByte, byte[] keyByte) {
+    private static byte[] dec(byte[] dataByte, byte[] keyByte) {
         byte[][] keys = generateKeys(keyByte);
         byte[] ipByte = initPermute(dataByte);
         byte[] ipLeft = new byte[32];
@@ -622,7 +635,7 @@ public class DesEncryptUtils {
         return finallyPermute(finalData);
     }
 
-    public String strEnc(String data, String firstKey, String secondKey, String thirdKey) {
+    public static String strEnc(String data, String firstKey, String secondKey, String thirdKey) {
         int length = data.length();
         StringBuilder encData = new StringBuilder();
         byte[][] firstKeyBt = new byte[0][], secondKeyBt = new byte[0][], thirdKeyBt = new byte[0][];
@@ -752,7 +765,7 @@ public class DesEncryptUtils {
         return encData.toString();
     }
 
-    public String strDec(String data, String firstKey, String secondKey, String thirdKey) {
+    public static String strDec(String data, String firstKey, String secondKey, String thirdKey) {
         int length = data.length();
         StringBuilder decStr = new StringBuilder();
         byte[][] firstKeyBt = new byte[0][], secondKeyBt = new byte[0][], thirdKeyBt = new byte[0][];
